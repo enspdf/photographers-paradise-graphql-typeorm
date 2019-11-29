@@ -1,11 +1,13 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, useContainer } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import * as express from "express";
 import { buildSchema } from "type-graphql";
+import { Container } from "typedi";
 
 (async () => {
     const app = express();
+    useContainer(Container);
 
     await createConnection();
 
@@ -13,6 +15,7 @@ import { buildSchema } from "type-graphql";
         schema: await buildSchema({
             resolvers: [`${__dirname}/./modules/**/*.resolver.ts`],
             emitSchemaFile: true,
+            container: Container,
         }),
     });
 
